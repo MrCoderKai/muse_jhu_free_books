@@ -78,6 +78,7 @@ function download_a_book(){
 	    mkdir $saveDir
         elif [ -n "$myline" ];then
 	    download_a_chapter "$myline" $index $bookTitle &
+	    sleep 3s
 	fi
     done < $FilePath
     wait # wait to finish
@@ -87,4 +88,7 @@ function download_a_book(){
 for file in `ls $BOOK_ROOT"crawl_complete"`;do
     echo "Download "$file" ..."
     download_a_book "$file"
+    echo "sleep 30s"
+    sleep 30s
+    echo "weakup"
 done
