@@ -1,0 +1,5 @@
+/root/book/src
+/root/book/crawl_complete
+/root/book/success
+/root/baok/failed
+/root/book/pdf
