@@ -56,7 +56,7 @@ class MuseJhuSpider(scrapy.Spider):
         request_url = response.url
         mbcItem['index'] = str(self.URLS.index(request_url) + 1)
         title_tmp = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
-        mbcItem['title'] = self.validateTitle(title_tmp.strip().replace(' ', '-').replace('\t', '-').replace('\n', '-'))
+        mbcItem['title'] = self.validateTitle(title_tmp.strip()).replace(' ', '-').replace('\t', '-').replace('\n', '-')
         #mbcItem['title'] = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
         self.log("book title: %s" % mbcItem['title'])
         content = ''
@@ -69,7 +69,7 @@ class MuseJhuSpider(scrapy.Spider):
             chapter = chapter.replace('\n', ' ')
             download_url = res.xpath(".//ul[@id='action_btns']//li//@href").extract()[-2]
             download_url_full = "https://muse.jhu.edu" + download_url
-            content = content + self.validateTitle(chapter.strip().replace(' ', '-').replace('\t', '-').replace('\n', '-')) \
+            content = content + self.validateTitle(chapter.strip()).replace(' ', '-').replace('\t', '-').replace('\n', '-') \
                     + ' ' + download_url_full + '\n'
             self.log('chapter: %s, download_url = %s' % (chapter, download_url_full))
         mbcItem['content'] = content
