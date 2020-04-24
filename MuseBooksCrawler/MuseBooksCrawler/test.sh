@@ -8,3 +8,11 @@ IFS=$OLD_IFS
 for i in $arr;do
 	echo $i
 done
+
+
+s="/root/book/src"
+if [ -d "$s" ];then
+	echo "$s exists"
+else
+	echo "$s does not exists"
+fi

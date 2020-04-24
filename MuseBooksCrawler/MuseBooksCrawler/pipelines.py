@@ -9,10 +9,11 @@ import shutil
 
 class MusebookscrawlerPipeline(object):
     def process_item(self, item, spider):
-        #print("index: %s" % item['index'])
-        #print("title: %s" % item['title'])
-        #print("content: \n %s" % item['content'])
+        print("index: %s" % item['index'])
+        print("title: %s" % item['title'])
+        print("content: \n %s" % item['content'])
         download_url_path = '/root/book/src/' + item['index'] + '.txt'
+        print("writing to " + download_url_path)
         with open(download_url_path, 'w') as f:
             f.write(item['index'] + '\n')
             f.write(item['title'] + '\n')

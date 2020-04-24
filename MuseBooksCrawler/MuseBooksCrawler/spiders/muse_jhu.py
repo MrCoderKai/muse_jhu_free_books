@@ -3,6 +3,7 @@ import scrapy
 import xlrd
 import re
 from MuseBooksCrawler.items import MusebookscrawlerItem
+import os
 
 class MuseJhuSpider(scrapy.Spider):
     name = 'muse_jhu'
@@ -25,12 +26,27 @@ class MuseJhuSpider(scrapy.Spider):
         cnt = 0
         start_urls = url # update url
         self.URLS = url
+        
+################################# for failed items ##################
+#        failed_idx = []
+#        for root, dirs, files in os.walk("/root/book/failed_tmp/"):
+#            for f in files:
+#                f_tmps = f.split('.')
+#                if f_tmps[1] == 'txt':
+#                    failed_idx.append(int(f_tmps[0]))
+#        failed_idx.sort()
+#        self.log("Failed books: ")
+#        print(failed_idx)
+#
+#        start_urls = []
+#        for idx in failed_idx:
+#            start_urls.append(url[idx - 1])
+######################################################################
         for url in start_urls:
-            self.log("Downloading from %s ... %d/%d" % (url, cnt, book_num))
-            self.current_title = title[cnt - 1]
+            self.log("Downloading from %s ... %d/%d" % (url, cnt, len(start_urls)))
             yield scrapy.Request(url=url, callback=self.parse)
             cnt = cnt + 1
-            #if cnt > 9:
+            #if cnt >= 1:
             #    break;
 
 
@@ -40,7 +56,7 @@ class MuseJhuSpider(scrapy.Spider):
         request_url = response.url
         mbcItem['index'] = str(self.URLS.index(request_url) + 1)
         title_tmp = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
-        mbcItem['title'] = self.validateTitle(title_tmp.strip().replace(' ', '-'))
+        mbcItem['title'] = self.validateTitle(title_tmp.strip().replace(' ', '-').replace('\t', '-').replace('\n', '-'))
         #mbcItem['title'] = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
         self.log("book title: %s" % mbcItem['title'])
         content = ''
@@ -50,9 +66,10 @@ class MuseJhuSpider(scrapy.Spider):
                 self.log("chapter is None or chapter length is 0")
                 continue
             chapter = ''.join(chapter)
+            chapter = chapter.replace('\n', ' ')
             download_url = res.xpath(".//ul[@id='action_btns']//li//@href").extract()[-2]
             download_url_full = "https://muse.jhu.edu" + download_url
-            content = content + self.validateTitle(chapter.strip().replace(' ', '-')) \
+            content = content + self.validateTitle(chapter.strip().replace(' ', '-').replace('\t', '-').replace('\n', '-')) \
                     + ' ' + download_url_full + '\n'
             self.log('chapter: %s, download_url = %s' % (chapter, download_url_full))
         mbcItem['content'] = content
