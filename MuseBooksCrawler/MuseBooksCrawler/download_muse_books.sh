@@ -14,7 +14,7 @@ function download_a_chapter(){
     index=$2
     bookTitle=$3
     OLD_IFS=$IFS
-    IFS=" "
+    IFS="|"
     array=($myline)
     IFS=$OLD_IFS
     #echo "myline: "$myline
@@ -24,7 +24,7 @@ function download_a_chapter(){
     #    echo "var: "$var
     #done
     chapter=${array[0]}
-    chapter=`expr substr "$chapter" 1 30`
+    #chapter=`expr substr "$chapter" 1 30`
     url=${array[1]}
     echo "Downloading chapter: "$chapter" from "$url
     filePath=$BOOK_ROOT"pdf/"$index"."$bookTitle"/"$chapter".pdf"

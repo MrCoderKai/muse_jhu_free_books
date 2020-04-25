@@ -43,6 +43,7 @@ class MuseJhuSpider(scrapy.Spider):
 #            start_urls.append(url[idx - 1])
 ######################################################################
         for url in start_urls:
+            #url = "https://muse.jhu.edu/book/48289"
             self.log("Downloading from %s ... %d/%d" % (url, cnt, len(start_urls)))
             yield scrapy.Request(url=url, callback=self.parse)
             cnt = cnt + 1
@@ -56,7 +57,7 @@ class MuseJhuSpider(scrapy.Spider):
         request_url = response.url
         mbcItem['index'] = str(self.URLS.index(request_url) + 1)
         title_tmp = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
-        mbcItem['title'] = self.validateTitle(title_tmp.strip()).replace(' ', '-').replace('\t', '-').replace('\n', '-')
+        mbcItem['title'] = self.validateTitle(title_tmp)
         #mbcItem['title'] = response.xpath("//div[@id='book_banner_title']//h2//text()").extract()[0].split(':')[0]
         self.log("book title: %s" % mbcItem['title'])
         content = ''
@@ -69,8 +70,8 @@ class MuseJhuSpider(scrapy.Spider):
             chapter = chapter.replace('\n', ' ')
             download_url = res.xpath(".//ul[@id='action_btns']//li//@href").extract()[-2]
             download_url_full = "https://muse.jhu.edu" + download_url
-            content = content + self.validateTitle(chapter.strip()).replace(' ', '-').replace('\t', '-').replace('\n', '-') \
-                    + ' ' + download_url_full + '\n'
+            content = content + self.validateTitle(chapter) \
+                    + '|' + download_url_full + '\n'
             self.log('chapter: %s, download_url = %s' % (chapter, download_url_full))
         mbcItem['content'] = content
         yield mbcItem # Will go to your pipeline
@@ -87,6 +88,22 @@ class MuseJhuSpider(scrapy.Spider):
 
 
     def validateTitle(self, title):
-        rstr = r"[\/\\\:\*\?\"\<\>\|\']"  # '/ \ : * ? " < > | \''
-        new_title = re.sub(rstr, "_", title) 
+        max_title_len = 64
+        special_chars = ['.', '-', '_']
+        title = title.strip().replace('\n', '-').replace(' ', '-').replace('\t', '-')
+        rstr = r"[\/\\\:\*\?\"\<\>\|\'\#\,]"  # '/ \ : * ? " < > | \' # ,'
+        title = re.sub(rstr, "-", title) 
+        new_title = ""
+        first_special_char = ''
+        for c in title:
+            if c in special_chars:
+                if len(first_special_char) == 0:
+                    first_special_char = c;
+            else:
+                if len(first_special_char) != 0:
+                    new_title = new_title + first_special_char
+                    first_special_char = ''
+                new_title = new_title + c
+        if len(new_title) > max_title_len:
+            new_title = new_title[0:max_title_len]
         return new_title
