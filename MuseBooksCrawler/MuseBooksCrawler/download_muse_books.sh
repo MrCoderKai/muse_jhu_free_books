@@ -13,10 +13,7 @@ function download_a_chapter(){
     myline=$1
     index=$2
     bookTitle=$3
-    OLD_IFS=$IFS
-    IFS="|"
     array=($myline)
-    IFS=$OLD_IFS
     #echo "myline: "$myline
     #echo "index: "$index
     #echo "bookTitle: "$bookTitle
@@ -26,12 +23,13 @@ function download_a_chapter(){
     chapter=${array[0]}
     #chapter=`expr substr "$chapter" 1 30`
     url=${array[1]}
-    echo "Downloading chapter: "$chapter" from "$url
+    echo "\nDownloading chapter: "$chapter" from "$url
     filePath=$BOOK_ROOT"pdf/"$index"."$bookTitle"/"$chapter".pdf"
     if [ -e $filePath ];then
 	    rm -rf $filePath
     fi
-    wget $url -O $filePath
+    #wget -c -t 10 $url -O $filePath
+    curl -L $url -O $filePath
     if [ $? -ne 0 ];then
 	# fail
 	failFilePath=$BOOK_ROOT"failed/"$index".txt"
@@ -78,7 +76,7 @@ function download_a_book(){
 	    echo "saveDir: "$saveDir
 	    if [ -d "$saveDir" ];then
 		echo "$saveDir exists."
-		#rm -rf $saveDir
+		rm -rf $saveDir
 	    fi
 	    mkdir $saveDir
         elif [ -n "$myline" ];then
@@ -92,6 +90,10 @@ function download_a_book(){
 
 
 for file in `ls $BOOK_ROOT"crawl_complete"`;do
+    OLD_IFS=$IFS
+    IFS="|"
     echo "Download "$file" ..."
     download_a_book "$file"
+    sleep 1s
+    IFS=$OLD_IFS
 done
