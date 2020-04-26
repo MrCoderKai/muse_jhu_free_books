@@ -29,7 +29,8 @@ function download_a_chapter(){
 	    rm -rf $filePath
     fi
     #wget -c -t 10 $url -O $filePath
-    curl -L $url -O $filePath
+    curl -A "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.0)" -L -o $filePath $url
+    #curl -L $url -o $filePath
     if [ $? -ne 0 ];then
 	# fail
 	failFilePath=$BOOK_ROOT"failed/"$index".txt"
@@ -81,7 +82,7 @@ function download_a_book(){
 	    mkdir $saveDir
         elif [ -n "$myline" ];then
 	    download_a_chapter "$myline" $index $bookTitle &
-	    sleep 1s
+	    sleep 5s
 	fi
     done < $FilePath
     wait # wait to finish
@@ -94,6 +95,6 @@ for file in `ls $BOOK_ROOT"crawl_complete"`;do
     IFS="|"
     echo "Download "$file" ..."
     download_a_book "$file"
-    sleep 1s
+    sleep 10s
     IFS=$OLD_IFS
 done

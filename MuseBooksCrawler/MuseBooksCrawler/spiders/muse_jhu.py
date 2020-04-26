@@ -14,7 +14,7 @@ class MuseJhuSpider(scrapy.Spider):
 
     def start_requests(self):
         start_urls = ['http://muse.jhu.edu/book/42']
-        book_list_dir = '/root/muse_free_books/MuseBooksCrawler/project_muse_free_covid_book.xlsx'
+        book_list_dir = '/root/muse_jhu_free_books/MuseBooksCrawler/project_muse_free_covid_book.xlsx'
         title = []
         url = []
         title, url = self.read_book_title_url(book_list_dir)

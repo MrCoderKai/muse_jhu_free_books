@@ -6,5 +6,5 @@ if [[ "$result" != "" ]];then
     echo "Running"
 else
     echo "Not Running"
-    nohup sh /root/muse_free_books/MuseBooksCrawler/MuseBooksCrawler/download_muse_books.sh >> /root/download_muse.log 2>&1 &
+    nohup sh /root/muse_jhu_free_books/MuseBooksCrawler/MuseBooksCrawler/download_muse_books.sh >> /root/download_muse.log 2>&1 &
 fi
