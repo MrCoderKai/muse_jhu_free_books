@@ -4,3 +4,7 @@ mkdir -p /root/book/failed
 mkdir -p /root/book/success
 mkdir -p /root/book/downloading
 mkdir -p /root/book/pdf
+echo 60 > /root/book/book_sleep_high
+echo 30 > /root/book/book_sleep_low
+echo 40 > /root/book/chapter_sleep_high
+echo 20 > /root/book/chapter_sleep_low

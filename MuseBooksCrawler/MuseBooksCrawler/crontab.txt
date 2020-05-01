@@ -1,1 +1,1 @@
-*/30 * * * * sh /root/muse_free_books/MuseBooksCrawler/MuseBooksCrawler/run_download.sh "download_muse_books.sh" >> /root/tmp.log
+*/2 * * * * sh /root/muse_jhu_free_books/MuseBooksCrawler/MuseBooksCrawler/run_download.sh "download_muse_books.sh" >> /root/tmp.log

@@ -104,8 +104,12 @@ function download_a_book(){
 	    mkdir $saveDir
         elif [ -n "$myline" ];then
 	    download_a_chapter "$myline" $index $bookTitle &
-	    chapter_sleep_sec=$(rand 20 60)
+	    chapter_sleep_low=`cat ${BOOK_ROOT}chapter_sleep_low`
+	    chapter_sleep_high=`cat ${BOOK_ROOT}chapter_sleep_high`
+	    chapter_sleep_sec=$(rand $chapter_sleep_low $chapter_sleep_high)
+	    echo "sleep $chapter_sleep_sec seconds after download chapter $myline"
 	    sleep ${chapter_sleep_sec}s
+	    echo "Time up, weakup after download $myline"
 	fi
     done < $FilePath
     wait # wait to finish
@@ -127,7 +131,11 @@ for file in `ls $BOOK_ROOT"crawl_complete"`;do
     IFS="|"
     echo "Download "$file" ..."
     download_a_book "$file"
-    book_sleep_sec=$(rand 40 80)
+    book_sleep_low=`cat ${BOOK_ROOT}book_sleep_low`
+    book_sleep_high=`cat ${BOOK_ROOT}book_sleep_high`
+    book_sleep_sec=$(rand $book_sleep_low $book_sleep_high)
+    echo "sleep $book_sleep_sec seconds after download $file"
     sleep ${book_sleep_sec}s
+    echo "Time up, weakup after download book: $file"
     IFS=$OLD_IFS
 done
