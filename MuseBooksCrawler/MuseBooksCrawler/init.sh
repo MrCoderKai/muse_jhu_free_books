@@ -1,4 +1,4 @@
-pip install xlrd scrapy
+pip3 install xlrd scrapy
 mkdir -p /root/book/src
 mkdir -p /root/book/crawl_complete
 mkdir -p /root/book/failed
