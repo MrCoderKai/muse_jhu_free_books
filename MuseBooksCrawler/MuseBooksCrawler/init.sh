@@ -1,4 +1,5 @@
 pip3 install xlrd scrapy
+yum install -y bc
 mkdir -p /root/book/src
 mkdir -p /root/book/crawl_complete
 mkdir -p /root/book/failed
